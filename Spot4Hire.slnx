@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Backend.Tests/Spot4Hire.Backend.Tests.csproj" Id="7452027e-0345-44c0-8699-107f13b3619a" />
+  <Project Path="Backend/Spot4Hire.Backend.csproj" />
+  <Project Path="Spot4Hire.AppHost/Spot4Hire.AppHost.csproj" />
+  <Project Path="Spot4Hire.ServiceDefaults/Spot4Hire.ServiceDefaults.csproj" />
+</Solution>

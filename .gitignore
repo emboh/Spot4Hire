@@ -1,0 +1,203 @@
+## =============================================================
+##  Spot4Hire — .gitignore  (.NET 10 / Aspire / React+Vite / IaC)
+## =============================================================
+
+## ------------------------------
+##  .NET build output
+## ------------------------------
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+project.lock.json
+project.fragment.lock.json
+*.binlog
+
+## ------------------------------
+##  .NET / MSBuild misc
+## ------------------------------
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.userprefs
+*.rsuser
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+StyleCopReport.xml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+.JustCode
+_TeamCity*
+_Chutzpah*
+BenchmarkDotNet.Artifacts/
+
+## ------------------------------
+##  Test / coverage results
+## ------------------------------
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+*.trx
+coverage*.json
+coverage*.xml
+coverage*.info
+TestResults/
+nunit-*.xml
+
+## ------------------------------
+##  ASP.NET / EF scaffolding
+## ------------------------------
+ScaffoldingReadMe.txt
+Migrations/*.Designer.cs.orig
+*.mdf
+*.ldf
+*.ndf
+
+## ------------------------------
+##  Secrets — never commit
+## ------------------------------
+## User Secrets live outside the repo (per-user), but ignore any local copies.
+secrets.json
+appsettings.*.local.json
+*.secrets.json
+*.env
+.env
+.env.*
+!.env.example
+
+## NOTE: appsettings.Development.json IS committed on purpose — it only holds
+## the local-dev connection strings (localhost SQL + local Ollama endpoint),
+## no passwords. The Aspire "sql-password" parameter is stored in User Secrets,
+## not in source, so nothing sensitive is checked in.
+
+## ------------------------------
+##  Visual Studio / Rider / VS Code
+## ------------------------------
+.vs/
+.vscode/
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.iml
+.idea/
+*.sln.DotSettings.user
+*.iml
+
+## ------------------------------
+##  .NET Aspire
+## ------------------------------
+## Aspire manifest / generated deployment output
+aspire-manifest.json
+.aspire/
+**/Properties/launchSettings.json.local
+
+## ------------------------------
+##  NuGet
+## ------------------------------
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+## ------------------------------
+##  Node / React / Vite (frontend/)
+## ------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.eslintcache
+.cache/
+*.tsbuildinfo
+
+## ------------------------------
+##  Terraform (infra — in progress)
+## ------------------------------
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+!example.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform.lock.hcl
+
+## ------------------------------
+##  Docker / containers
+## ------------------------------
+**/.docker/
+docker-compose.override.yml
+
+## ------------------------------
+##  OS files
+## ------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
