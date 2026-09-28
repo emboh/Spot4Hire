@@ -8,7 +8,7 @@ double-booking. The whole system is orchestrated locally with **.NET Aspire**.
 
 > **Status:** actively developed. The Web API, AI assistant, and integration
 > tests are in place. RAG and the extraction of the AI assistant into its own
-> microservice are in progress — see [In-progress work](#in-progress-work).
+> microservice are in progress; see [In-progress work](#in-progress-work).
 
 ---
 
@@ -35,7 +35,7 @@ double-booking. The whole system is orchestrated locally with **.NET Aspire**.
 
 ```
 Spot4Hire/
-├─ Spot4Hire.AppHost/          # Aspire orchestrator — wires up SQL, Redis, Ollama, Backend
+├─ Spot4Hire.AppHost/          # Aspire orchestrator that wires up SQL, Redis, Ollama, Backend
 ├─ Spot4Hire.ServiceDefaults/  # Shared Aspire defaults (telemetry, health, resilience)
 ├─ Backend/                    # The Web API (domain, EF Core, controllers, AI assistant)
 │  ├─ Controllers/             #   Venues, Units, OpeningHours, Bookings, Users, Assistant
@@ -46,7 +46,7 @@ Spot4Hire/
 │  ├─ Common/                  #   Result, paging, Gridify mappers, rate-limit policies
 │  ├─ Filters/  OpenApi/  Authorization/
 ├─ Backend.Tests/             # Integration tests (Testcontainers + xUnit v3)
-├─ Spot4Hire.Server/          # Web host (Aspire-enabled) — frontend host / BFF surface
+├─ Spot4Hire.Server/          # Web host (Aspire-enabled); frontend host / BFF surface
 └─ frontend/                  # React + Vite + TypeScript client
 ```
 
@@ -54,14 +54,14 @@ Spot4Hire/
 
 ## Features
 
-**Catalog — venues, units & opening hours.** Full CRUD for venues, the units
+**Catalog: venues, units & opening hours.** Full CRUD for venues, the units
 inside them, and per-venue opening hours. Deleting a venue **cascade
 soft-deletes** its units. Bookings live under units, so their routes nest
 naturally (`/api/venues/{venueId}/units/{unitId}/bookings`).
 
 **Geospatial "nearby" search.** Venue coordinates are stored as EF Core
 NetTopologySuite geography points (SRID 4326), so "find venues near me" is a
-real spatial distance query — the response includes the distance in meters.
+real spatial distance query, and the response includes the distance in meters.
 
 **Bookings without double-booking.** Creating a booking runs inside a
 **serializable transaction** that rejects any overlap on the same unit, so two
@@ -69,8 +69,8 @@ customers can't book the same slot. Bookings carry a start/end time and expire
 naturally, so they don't need soft delete.
 
 **Identity & roles.** Authentication uses the built-in ASP.NET Core Identity
-API endpoints (`MapIdentityApi`). Three roles — **Admin**, **Owner**,
-**Customer** — gate behaviour: owners manage only their own venues; only an
+API endpoints (`MapIdentityApi`). Three roles, **Admin**, **Owner**, and
+**Customer**, gate behaviour: owners manage only their own venues; only an
 admin can reassign a venue's owner (and the assignee must hold the Owner role);
 the last admin is protected and an admin can't delete itself.
 
@@ -78,7 +78,7 @@ the last admin is protected and an admin can't delete itself.
 for a user.
 
 **Filtering, sorting & paging everywhere.** Every list endpoint accepts Gridify
-query strings — e.g. `?filter=name=*coffee,rating>4&orderBy=name&page=1&pageSize=20`.
+query strings, e.g. `?filter=name=*coffee,rating>4&orderBy=name&page=1&pageSize=20`.
 Filterable/sortable fields are **whitelisted** via central Gridify mappers
 (unmapped fields are ignored, sensitive fields like password hashes are never
 exposed), and the allowed fields are documented per endpoint in the OpenAPI /
@@ -88,7 +88,7 @@ Scalar docs.
 (created/updated stamps) are handled centrally in `AppDbContext`. Service
 methods return a `Result` / `Result<T>` that controllers map to the right HTTP
 status. Requests are validated by FluentValidation through a single global
-action filter (validators are discovered by assembly scan — no per-controller
+action filter (validators are discovered by assembly scan, no per-controller
 wiring). Rate limiting is applied via named policies (the AI assistant has its
 own stricter policy).
 
@@ -97,7 +97,7 @@ and document the Gridify query parameters; the interactive reference is served
 by Scalar.
 
 **Mapping.** DTO ↔ entity mapping is done with hand-written extension methods
-(deliberately no mapping library — evaluated AutoMapper and Mapperly and found
+(deliberately no mapping library; evaluated AutoMapper and Mapperly and found
 they cluttered the project).
 
 **Dev seeding & tests.** In Development the database is seeded with Bogus
@@ -111,13 +111,13 @@ in Docker via Testcontainers under xUnit v3.
 
 Spot4Hire ships a natural-language assistant that answers questions like
 *"find me a coffee spot near here that's open now"* by calling the same domain
-services the API uses — no separate data path, so the assistant can never return
+services the API uses, with no separate data path, so the assistant can never return
 something a normal query couldn't.
 
 **How it works**
 
-- **Endpoint:** `POST /api/assistant/ask` (`AssistantController`) — authorized,
-  and behind its own rate-limit policy because inference is expensive.
+- **Endpoint:** `POST /api/assistant/ask` (`AssistantController`). It is authorized
+  and sits behind its own rate-limit policy because inference is expensive.
 - **Chat client:** the assistant talks to an `IChatClient` from
   `Microsoft.Extensions.AI`, configured with `UseFunctionInvocation()` so the
   model can call tools and the framework runs the tool loop automatically. A
@@ -127,7 +127,7 @@ something a normal query couldn't.
   an Aspire connection string (`ConnectionStrings:chat`) rather than a
   container, via `CommunityToolkit.Aspire.OllamaSharp`.
 - **Tools:** five **read-only** functions (`AIFunctionFactory`) wrap the venue,
-  unit, and booking services — `SearchVenues`, `FindNearbyVenues`,
+  unit, and booking services: `SearchVenues`, `FindNearbyVenues`,
   `GetVenueDetails`, `GetUnits`, `CheckAvailability`. Errors are returned to the
   model as data rather than thrown, so it can recover conversationally.
 
@@ -135,7 +135,7 @@ something a normal query couldn't.
 
 - **Location privacy.** The caller's latitude/longitude are passed in the
   request and held in a per-request scoped `AssistantContext`. The coordinates
-  are **never shown to the model** — the system prompt only tells it *whether* a
+  are **never shown to the model**. The system prompt only tells it *whether* a
   location is available, and the nearby-search tool reads the coordinates
   server-side. So the LLM can do proximity search without ever seeing where the
   user is.
@@ -181,7 +181,7 @@ What this gives you:
 - **SQL Server** in a container on a fixed port (14330), with a persistent data
   volume and a persistent container lifetime so your data and schema survive
   between runs. The DB password is an Aspire **secret parameter** stored in User
-  Secrets — never in source.
+  Secrets, never in source.
 - **Redis** as a persistent container (output caching today; the planned AI
   read-model tomorrow).
 - **Ollama** referenced as a connection string so the API uses the local GPU
@@ -221,7 +221,7 @@ with sample data via Bogus.
 
 ## In-progress work
 
-These are deliberate next steps for the project — documented here as a roadmap,
+These are deliberate next steps for the project, documented here as a roadmap,
 not yet shipped.
 
 ### 1. Decoupling the AI Assistant into its own microservice
@@ -240,8 +240,8 @@ service** that can be scaled (and GPU-scheduled) independently of the main API.
 
 ### 2. RAG (Retrieval-Augmented Generation)
 
-Beyond structured tool calls, the assistant will retrieve relevant context —
-venue descriptions, amenities, policies, reviews — and ground its answers on it.
+Beyond structured tool calls, the assistant will retrieve relevant context:
+venue descriptions, amenities, policies, and reviews, then ground its answers on it.
 
 - Content is embedded and stored in a **vector index** (Redis Stack vector
   search is the leading candidate, so the geo read-model and the vector store
@@ -253,8 +253,8 @@ venue descriptions, amenities, policies, reviews — and ground its answers on i
 ### 3. Infrastructure as Code (Terraform)
 
 The Aspire topology maps cleanly onto cloud primitives; Terraform will provision
-the deployed infrastructure (Azure Container Apps is the leading target) — the
-API, the AI service, managed SQL, and managed Redis — so environments are
+the deployed infrastructure (Azure Container Apps is the leading target): the
+API, the AI service, managed SQL, and managed Redis, so environments are
 reproducible.
 
 ---
